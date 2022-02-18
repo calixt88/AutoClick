@@ -2,36 +2,50 @@ package com.example.autoclicker;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.*;
 
 public class AutoClicker extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("design.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("AutoClicker");
-        stage.setScene(scene);
-        Image icon = new Image("file:clicker.jpg");
-        stage.getIcons().add(icon);
-        stage.show();
+    public void start(Stage stage) {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("design.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("xClicker");
+            stage.getIcons().add(new Image("file:Images/xclickerIcon.jpg"));
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+
+            FXMLLoader helpLoader = new FXMLLoader(getClass().getResource("help.fxml"));
+            Stage helpStage = new Stage();
+            Scene helpScene = new Scene(helpLoader.load());
+            helpStage.setTitle("Help");
+            helpStage.getIcons().add(new Image("file:Images/xclickerIcon.jpg"));
+            helpStage.setScene(helpScene);
+            helpStage.setResizable(false);
+            helpStage.hide();
 
 
-        Stage helpStage = new Stage();
-        FXMLLoader helpLoader = new FXMLLoader();
-        helpLoader.setLocation(getClass().getResource("help.fxml"));
-        Parent rootTwo = helpLoader.load();
-        helpStage.setTitle("Help Window");
-        helpStage.setScene(new Scene(rootTwo));
+            Controller controller = fxmlLoader.getController();
+            controller.setMainStage(stage);
+            controller.setStage(helpStage);
 
+            HelpController helpController = helpLoader.getController();
+            helpController.setController(controller);
+            helpController.setHelpStage(helpStage);
 
-        Controller controller = helpLoader.getController();
-        //controller.setController(controller);
-        //controller.setStage();
-        helpStage.setOnCloseRequest(event -> controller.help());
+        }catch(NullPointerException e){
+            System.out.println("Null Pointer Exception");
+        }catch(IOException e){
+            System.out.println("IO Exception from Autoclicker.java");
+        }catch(Exception e){
+            System.out.println("Ope, none of those");
+        }
+
 
     }
 

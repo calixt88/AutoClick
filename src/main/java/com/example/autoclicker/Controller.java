@@ -2,26 +2,15 @@ package com.example.autoclicker;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Paint;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Calendar;
-
-/*
-TODO: See if the checkboxes can be colored to grey
-TODO: See about making the button animation from being clicked
-TODO: Be able tp use the drop down menu for left and right click
-TODO: Add Alerts in the Exceptions for GUI use
-TODO: Add Icon
-*/
-
 
 public class Controller {
 
@@ -32,35 +21,45 @@ public class Controller {
     CheckBox repeatOnly, customLocation;
 
     @FXML
-    Button start, getButton, stop;
+    Button getButton, stop, startBtn;
+
+    @FXML
+    MenuButton buttonChoice;
 
     Stage helpStage;
-    Stage stage;
+    Stage mainStage;
+
     boolean status = true;
-    int xCoordinates;
-    int yCoordinates;
+    int xCoordinates = 0;
+    int yCoordinates = 0;
+    int button = InputEvent.BUTTON1_DOWN_MASK;
+    Robot r = new Robot();
+
+    public Controller() throws AWTException {
+    }
 
     void click(){
         try {
             System.out.println("Click");
-           Robot r = new Robot();
-           int button = InputEvent.BUTTON1_DOWN_MASK;
-           r.mousePress(button);
-           Thread.sleep(400);
-           r.mouseRelease(button);
-           Thread.sleep(400);
-
-        } catch (AWTException | InterruptedException e) {
-            e.printStackTrace();
+            r.mousePress(button);
+            Thread.sleep(1);
+            r.mouseRelease(button);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
-
     @FXML
-    public void start(ActionEvent event) {
+    public void start(ActionEvent event){
+        stop.setDisable(false);
+        go();
+        stop.setDisable(true);
+    }
 
-        Calendar c = Calendar.getInstance();
-        System.out.format("%tl:%tM %tp%n", c, c, c);
+    public void go() {
+
+//        Calendar c = Calendar.getInstance();
+//        System.out.format("%tl:%tM %tp%n", c, c, c);
 
         try{
             Robot r = new Robot();
@@ -74,14 +73,24 @@ public class Controller {
             double millisecondToSeconds = Double.parseDouble(millisecond) / 0.001;
             double secondsToSeconds = Double.parseDouble(second);
 
-            double time = hourToSeconds  + millisecondToSeconds + minuteToSeconds + secondsToSeconds;
+            double time = (hourToSeconds + millisecondToSeconds + minuteToSeconds + secondsToSeconds) * 1000;
             long num = Double.valueOf(time).longValue();
 
+            if(num < 500){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Interval Issue");
+                alert.setContentText("Please enter an interval over 500 milliseconds.");
+                alert.showAndWait();
+            }
+
             get();
-            r.mouseMove(xCoordinates,yCoordinates);
+
+            if(customLocation.isSelected()){
+                r.mouseMove(xCoordinates,yCoordinates);
+            }
 
             if(repeat.isDisabled()){
-                while(status != false){
+                for (int i = 0; i < 5000; i++){
                     click();
                     Thread.sleep(num);
                 }
@@ -93,41 +102,47 @@ public class Controller {
                     Thread.sleep(num);
                 }
             }
+        }catch(InterruptedException e){
+            Thread.currentThread().interrupt();
         }catch(NumberFormatException e){
-            System.out.println("Number format Exception has occurred.  MESSAGE:" + e.getMessage());
+            System.out.println("Number format Exception has occurred. " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Invalid Input. Please enter a valid integer.");
+            alert.setTitle("Number Format Exception");
+            alert.showAndWait();
         }catch(AWTException e){
-            System.out.println("An AWT Exception has Occurred. MESSAGE:" + e.getMessage());
+            System.out.println("An AWT Exception has Occurred. MESSAGE: " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Robot Error");
+            alert.setTitle("AWT Exception");
+            alert.showAndWait();
         }catch(Exception e){
-            System.out.println("A general exception has occurred MESSAGE:" + e.getMessage());
+            System.out.println("A general exception has occurred MESSAGE: " + e.getMessage());
         }
     }
 
     @FXML
     public void custom(ActionEvent event){
-        if(customLocation.isSelected()){
-            x.setDisable(false);
-            y.setDisable(false);
-            getButton.setDisable(false);
-        }else{
-            x.setDisable(true);
-            y.setDisable(true);
-            getButton.setDisable(true);
-        }
+            if(customLocation.isSelected()){
+                x.setDisable(false);
+                y.setDisable(false);
+                getButton.setDisable(false);
+            }else{
+                x.setDisable(true);
+                y.setDisable(true);
+                getButton.setDisable(true);
+            }
     }
 
     public void get(){
         try{
-            Robot r = new Robot();
             String xCoordinate = x.getText();
             String yCoordinate = y.getText();
             xCoordinates = Integer.parseInt(xCoordinate);
             yCoordinates = Integer.parseInt(yCoordinate);
         }catch(NumberFormatException e){
             System.out.println("Number Format Exception has Occurred" + e.getMessage());
-        }catch(AWTException e){
-            System.out.println("AWT Exception has Occurred" + e.getMessage());
         }
-
     }
 
     @FXML
@@ -139,21 +154,43 @@ public class Controller {
         }
     }
 
-    public void help(){
-        if(!helpStage.isShowing()){
-            System.out.println("Loading Help Screen");
-            helpStage.setX(stage.getX() + stage.getWidth());
-            helpStage.setY(stage.getY());
-            helpStage.show();
+    @FXML
+    public void help(ActionEvent event){
+        try{
+            if(helpStage.isShowing()){
+                helpStage.hide();
+            }else{
+                System.out.println("Loading Help Screen");
+                helpStage.setX(mainStage.getX());
+                helpStage.setY(mainStage.getY());
+                helpStage.show();
+            }
+        }catch(NullPointerException e){
+            System.out.println("Null Pointer");
+        }catch(Exception e){
+            System.out.println("ope");
         }
     }
 
-//    public void setController(Controller controller) {
-//        this.controller = controller;
-//    }
+    @FXML
+    public void right(ActionEvent event){
+        buttonChoice.setText("Right");
+        button = InputEvent.BUTTON3_DOWN_MASK;
+    }
 
-    public void setStage(Stage stage) {
+    @FXML
+    public void left(ActionEvent event){
+        buttonChoice.setText("Left");
+
+    }
+
+    public void setStage(Stage stage){
         helpStage = stage;
     }
+
+    public void setMainStage(Stage stage){
+        mainStage = stage;
+    }
+
 
 }
