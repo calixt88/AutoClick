@@ -6,7 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.*;
+
+/*
+TODO: Set Application Icon to xClicker.PNG
+TODO: Fix issue with timestamps on each of the method calls
+ */
 
 public class AutoClicker extends Application {
     @Override
@@ -38,6 +42,19 @@ public class AutoClicker extends Application {
             helpController.setController(controller);
             helpController.setHelpStage(helpStage);
 
+            scene.setOnKeyPressed(keyEvent -> {
+                switch(keyEvent.getCode()){
+                    case F1:
+                        controller.go();
+                        break;
+                    case F2:
+                        controller.stopMethod();
+                        break;
+                    default:
+                        break;
+                }
+            });
+
         }catch(NullPointerException e){
             System.out.println("Null Pointer Exception");
         }catch(IOException e){
@@ -45,8 +62,6 @@ public class AutoClicker extends Application {
         }catch(Exception e){
             System.out.println("Ope, none of those");
         }
-
-
     }
 
     public static void main(String[] args) {
