@@ -7,7 +7,7 @@ This autoclicker was developed using multi-threading which will allow for extrem
 Use this autoclicker at your own risk as this can be against the terms of service for some videogames. Almost all video games have the terms of service public and for anyone to view.
 
 ## Requirements
-A requirements to run this application is atleast Java 17 installed on your computer.
+A requirements to run this application is Java 17 or later installed on your computer.
 
 ## Common Key Strokes
 
