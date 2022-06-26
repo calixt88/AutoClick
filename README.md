@@ -36,10 +36,3 @@ The bottom right part of the autoclicker is an option to set your mouse position
 ![image](https://user-images.githubusercontent.com/24980194/158873855-f2e86128-d9e4-48d4-b374-fedc6dcfba30.png)
 
 After all of your settings are complete. You may either press the F1 Key to start or simply click the start button. There will be a 3 second deplay before beginning.
-
-## Updates
-- [ ] Finish README.md
-- [ ] Make ESC key close the program.
-- [ ] Figure out how to produce a working jar file.
-- [ ] Set the application icons for each scene.
-- [ ] Potentially change algorithm to click faster without crashes.
