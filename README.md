@@ -1,6 +1,6 @@
-# AutoClick
+# xClicker
 
-AutoClick is a recreation of the linux based xClicker application using the JavaFX framework. xClicker is a GUI and is very user-friendly. This application is very intutitve and can be used during use of another application. This will allow you to click on other applications.
+xClicker is a recreation of the linux based xClicker application using the JavaFX framework. xClicker is a GUI and is very user-friendly. This application is very intutitve and can be used during use of another application. This will allow you to click on other applications.
 
 This autoclicker was developed using multi-threading which will allow for extremely fast clicks without crashing the program. There is a failsafe however for an interval of 500ms between clicks. This is to save both the xClicker program, and your computer.
 
